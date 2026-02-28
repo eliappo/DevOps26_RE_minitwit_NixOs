@@ -67,7 +67,7 @@ jobs:
         run: |
           nix run github:nix-community/nixos-anywhere -- \
             --flake .#minitweet-db \
-            root@${{ env.DB_IP }}
+            root@${{ env.DB_PUBLIC_IP }}
 
       - name: Provision Web server with nixos-anywhere
         run: |
