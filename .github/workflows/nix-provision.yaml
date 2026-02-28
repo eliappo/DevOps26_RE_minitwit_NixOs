@@ -49,14 +49,15 @@ jobs:
 
       - name: Get IPs from Terraform
         run: |
-          echo "DB_IP=$(terraform output -raw db_private_ip)" >> $GITHUB_ENV
+          echo "DB_PRIVATE_IP=$(terraform output -raw db_private_ip)" >> $GITHUB_ENV
+          echo "DB_PUBLIC_IP=$(terraform output -raw db_public_ip)" >> $GITHUB_ENV
           echo "WEB_IP=$(terraform output -raw web_public_ip)" >> $GITHUB_ENV
         working-directory: ./terraform
 
       - name: Add hosts to known_hosts
         run: |
           ssh-keyscan ${{ env.WEB_IP }} >> ~/.ssh/known_hosts
-          ssh-keyscan ${{ env.DB_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ env.DB_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
       - name: Provision DB server with nixos-anywhere
         run: |
