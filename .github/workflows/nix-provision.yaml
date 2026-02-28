@@ -54,10 +54,14 @@ jobs:
           echo "WEB_IP=$(terraform output -raw web_public_ip)" >> $GITHUB_ENV
         working-directory: ./terraform
 
+      - name: Timeout to make sure Droplets are ready
+        run: |
+          sleep 30
+
       - name: Add hosts to known_hosts
         run: |
-          ssh-keyscan ${{ env.WEB_IP }} >> ~/.ssh/known_hosts
-          ssh-keyscan ${{ env.DB_PUBLIC_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -T 60 ${{ env.WEB_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -T 60 ${{ env.DB_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
       - name: Provision DB server with nixos-anywhere
         run: |
