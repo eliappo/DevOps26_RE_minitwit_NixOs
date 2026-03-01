@@ -3,6 +3,7 @@
 
   imports = [
     ../../modules/minitwit-app.nix
+    ../../modules/disk.nix
     ./hardware-configuration.nix
   ];
 

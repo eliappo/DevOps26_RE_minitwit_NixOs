@@ -2,6 +2,7 @@
 {
   imports = [
     ../../modules/postgres.nix
+    ../../modules/disk.nix
     ./hardware-configuration.nix
   ];
 
