@@ -4,7 +4,7 @@ let
     pname = "minitwit";
     version = "latest";
     src = ../.;
-    vendorHash = "sha256-zVj7biULqStZsrAe3xLNkOOX3ol/RLMUitmd2YujSLM=";
+    vendorHash = "sha256-Ato8k10HvnvQOyIe8vYpqLoT5rwlhMp4mJkTPJboO2s=";
     postInstall = ''
       mkdir -p $out/share/minitwit
       cp -r templates $out/share/minitwit/templates
@@ -36,12 +36,6 @@ in
         User = "minitwit";
       };
     };
-
-    ###    systemd.tmpfiles.rules = [
-    ###      "d /var/lib/minitwit 0750 minitwit minitwit -"
-    ###      "L /var/lib/minitwit/templates - - - - ${minitwit}/share/minitwit/templates"
-    ###      "L /var/lib/minitwit/static - - - - ${minitwit}/share/minitwit/static"
-    ###    ];
 
     users.users.minitwit = {
       isSystemUser = true;
