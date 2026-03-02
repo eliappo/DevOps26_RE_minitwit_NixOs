@@ -26,6 +26,7 @@
       { from = "host"; host.port = 2222; guest.port = 22; }
     ];
   };
+  networking.firewall.allowedTCPPorts = [ 22 ];
 
   system.stateVersion = "25.05";
 }
