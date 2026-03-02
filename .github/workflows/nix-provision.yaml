@@ -1,12 +1,10 @@
 name: Provision Infrastructure
-
 on:
-  workflow_dispatch:  # manual trigger only
+  workflow_dispatch:
 
 jobs:
   provision:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,21 +30,13 @@ jobs:
           TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
           TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
 
-      - name: Debug
-        run: |
-          echo "Token length: ${#TF_VAR_do_token}"
-          echo "SSH key length: ${#TF_VAR_ssh_key_id}"
+      - name: Terraform Destroy existing
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform
+        continue-on-error: true
         env:
           TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
           TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
-
-      - name: Terraform Destroy existing
-       run: terraform destroy -auto-approve
-       working-directory: ./terraform
-       env:
-         TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
-         TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
-       continue-on-error: true  # don't fail if nothing exists yet         TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -62,9 +52,8 @@ jobs:
           echo "WEB_IP=$(terraform output -raw web_public_ip)" >> $GITHUB_ENV
         working-directory: ./terraform
 
-      - name: Timeout to make sure Droplets are ready
-        run: |
-          sleep 30
+      - name: Wait for droplets to be ready
+        run: sleep 30
 
       - name: Add hosts to known_hosts
         run: |
