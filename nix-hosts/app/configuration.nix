@@ -3,6 +3,7 @@
 
   imports = [
     ../../modules/minitwit-app.nix
+    ../../modules/disk.nix
     ./hardware-configuration.nix
   ];
 
@@ -25,6 +26,7 @@
       { from = "host"; host.port = 2222; guest.port = 22; }
     ];
   };
+  networking.firewall.allowedTCPPorts = [ 22 ];
 
   system.stateVersion = "25.05";
 }
