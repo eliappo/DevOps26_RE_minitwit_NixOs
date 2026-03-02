@@ -20,20 +20,26 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
+      - name: Install Digital Ocean CLI
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
+
+      - name: Destroy existing droplets
+        run: |
+          doctl auth init -t ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+          doctl compute droplet delete minitwit-db --force || true
+          doctl compute droplet delete minitwit-web --force || true
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
-        env:
-          TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
-          TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
-
-      - name: Terraform Destroy existing
-        run: terraform destroy -auto-approve
-        working-directory: ./terraform
-        continue-on-error: true
         env:
           TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
           TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
