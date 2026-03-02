@@ -38,7 +38,14 @@ jobs:
           echo "SSH key length: ${#TF_VAR_ssh_key_id}"
         env:
           TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
+       - name: Terraform Destroy existing
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform
+        env:
+          TF_VAR_do_token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
           TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
+        continue-on-error: true  # don't fail if nothing exists yet         TF_VAR_ssh_key_id: ${{ secrets.DO_SSH_KEY }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
